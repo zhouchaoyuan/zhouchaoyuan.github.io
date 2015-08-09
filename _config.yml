@@ -82,12 +82,14 @@ follow:
 #Links
 customLinks:
   - item:
-    - text: liuxinglong
-      url: http://liuxinglong.github.io/Blog/
     - text: huanyueyaoqin
       url: http://huanyueyaoqin.com/
+    - text: wangkechun
+      url: http://blog.hi-hi.cn/#/
     - text: fengzixu
       url: http://fengzixu.net/
+    - text: liuxinglong
+      url: http://liuxinglong.github.io/Blog/
     - text: zhouchaoyuan
       url: http://blog.csdn.net/caoguo_app_android
     message: Friends
