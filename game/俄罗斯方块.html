@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>俄罗斯方块.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+    
+    <style type="text/css">
+    	body{
+    		border:1px solid red;
+    		margin:0px;
+    	}
+    	#left{
+    		position:relative;
+    		float:left;
+    		width:20%;
+    		height:100%;
+    		border-right:1px black solid;
+    	}
+    	#main{
+    		position:relative;
+    		float:left;
+    		width:79%;
+    		height:100%;
+    		border:1px solid blue;
+    	}
+    	#game{
+    		position:relative;
+    		width:400px;
+    		height:500px;
+    		left:20%;
+    		top:80px;
+    		border:1px solid black;
+    		background-color:#000;
+    	}
+    	#game>table{
+    		position:relative;
+    		width:240px;
+    		height:480px;
+    		top:10px;
+    		left:10px;
+    		background-color: #333;
+    		float:left;border-spacing: 0px;
+    	}
+    	#game>#info{
+    		position:relative;
+    		width:130px;
+    		left:20px;
+    		top:10px;
+    		float:left;
+    		height:480px;
+    		background-color:#ccf;
+    	}
+    	td{
+    		border:1px #333 solid;
+    	}
+    </style>
+    <script type="text/javascript" src="jquery-1.4.3.js"></script>
+	<script type="text/javascript">
+		var col=8,row=16;
+		var time=500,score=0;
+		var cellW;
+		var cell=new Array(row),vis=new Array(row);
+		var highLine=row-1;
+		var structs=new Array();
+		var bColor,curr;
+		var canLeft=true,canRight=true,canRotate=true,canDown=true;
+		$(document).ready(function(){
+			bColor=$("table").css("background-color");
+			//$("table").css("background-color","rgb(127,127,127)");
+			$("body").width(screen.width); 
+			$("body").height(screen.height*8.2/10);
+			cellW=parseFloat($("table").width())/8;
+			gameInit();
+			curr=create();
+			go();
+			$(window).keydown(function(event){
+	    		if(event.keyCode==38&&canRotate)rotate(curr);
+	    		if(event.keyCode==37&&canLeft)left();
+	    		if(event.keyCode==39&&canRight)right();
+	    		if(event.keyCode==40&&canDown)down();
+	    		return false;
+    		});
+		});
+		
+		function gameInit(){
+			var t=$("table");
+			for(var i=0;i<row;i++){
+				var tr=$("<tr></tr>");
+				cell[i]=new Array(col);
+				vis[i]=new Array(col);
+				for(var j=0;j<col;j++){
+					cell[i][j]=$("<td></td>").width(cellW).height(cellW-5);
+					tr.append(cell[i][j]);
+					vis[i][j]=false;
+				}
+				t.append(tr);
+			}
+			//正方形	 **
+			//		 **
+			var s1={
+				body:new Array(
+					{x:-1,y:3},
+					{x:-1,y:4},
+					{x:-2,y:3},
+					{x:-2,y:4}),
+				color:"red",
+				center:0
+			};
+			structs.push(s1);
+			//	*
+			//	***
+			var s2={
+				body:new Array({x:-1,y:3},{x:-1,y:4},{x:-2,y:4},{x:-3,y:4}),
+				color:"blue",
+				center:{x:-1.5,y:3.5}	
+			};
+			structs.push(s2);
+			// ***
+			// *
+			var s3={
+				body:new Array({x:-1,y:4},{x:-1,y:3},{x:-2,y:3},{x:-3,y:3}),
+				color:"#f80",
+				center:{x:-1.5,y:3.5}
+			};
+			structs.push(s3);
+			// **
+			//  **
+			var s4={
+				body:new Array({x:-1,y:3},{x:-2,y:3},{x:-2,y:4},{x:-3,y:4}),
+				color:"#0ff",
+				center:{x:-1.5,y:2.5}
+			};
+			structs.push(s4);
+			//  **
+			// **
+			var s5={
+				body:new Array({x:-1,y:4},{x:-2,y:4},{x:-2,y:3},{x:-3,y:3}),
+				color:"yellow",
+				center:{x:-1.5,y:2.5}
+			};
+			structs.push(s5);
+			// ****
+			var s6={
+				body:new Array({x:-1,y:2},{x:-1,y:3},{x:-1,y:4},{x:-1,y:5}),
+				color:"#f0f",
+				center:{x:-0.5,y:3.5}
+			};
+			structs.push(s6);
+			//  *
+			// ***
+			var s7={
+				body:new Array({x:-1,y:3},{x:-2,y:3},{x:-3,y:3},{x:-2,y:4}),
+				color:"#0f0",
+				center:{x:-2,y:4}
+			};
+			structs.push(s7);
+		}		
+		function go(){
+			if(!canDown){
+				for(var i in curr.body){
+					if(curr.body[i].x>=0){
+						vis[curr.body[i].x][curr.body[i].y]=true;
+						highLine=Math.min(highLine,curr.body[i].x);
+					}
+				}
+				clear();
+				if(isOver()){
+					alert("gameover");
+					canLeft=canRight=canRotate=false;
+					return;
+				}
+				curr=create();
+			}else{
+				down();
+			}
+			setTimeout(go,time);
+		}
+		function paintCell(point, color){
+			if(point.x>=0&&point.x<row&&point.y>=0&&point.y<col){
+				cell[point.x][point.y].css("background-color",color);
+			}
+		};
+		//顺时针旋转
+		function rotate(s){
+			//if(s.center==0)return;
+			//var newBody=new Array(s.boyd.length);
+			for(var i in s.body){
+				paintCell(s.body[i],bColor);
+				var dx=s.body[i].x-s.center.x;
+				var dy=s.body[i].y-s.center.y;
+				s.body[i].x=s.center.x+dy;
+				s.body[i].y=s.center.y-dx;
+	
+			}
+			for(var i in s.body){
+				paintCell(s.body[i],s.color);
+			}
+			canMove();
+		};
+		function create(){
+			var t=Math.floor(Math.random()*structs.length);
+			var c;
+			if(structs[t].center==0)c=0;
+			else c={x:structs[t].center.x,y:structs[t].center.y,};
+			var b=new Array(structs[t].body.length);
+			for(var i=0;i<b.length;i++){
+				b[i]={x:structs[t].body[i].x,y:structs[t].body[i].y,};
+			}
+			var o={
+				body:b,
+				color:structs[t].color,
+				center:c,		
+			};
+			canLeft=true;
+			canRight=true;
+			canDown=true;
+			canRotate=true;
+			return o;
+		}
+		function down(){
+			for(var i in curr.body){
+				paintCell(curr.body[i],bColor);				
+				curr.body[i].x++;
+			}
+			curr.center.x++;
+			for(var i in curr.body){
+				paintCell(curr.body[i],curr.color);				
+			}
+			canMove();
+		}
+		function left(){			
+			for(var i in curr.body){
+				paintCell(curr.body[i],bColor);				
+				curr.body[i].y--;
+			}
+			curr.center.y--;
+			for(var i in curr.body){
+				paintCell(curr.body[i],curr.color);
+			}
+			canMove();
+		}
+		function right(){
+			for(var i in curr.body){
+				paintCell(curr.body[i],bColor);				
+				curr.body[i].y++;
+			}
+			curr.center.y++;
+			for(var i in curr.body){
+				paintCell(curr.body[i],curr.color);
+			}
+			canMove();
+		}
+		function canMove(){
+			canDown=true;
+			canLeft=true;
+			canRight=true;
+			canRotate=true;
+			for(var i in curr.body){
+				if(curr.body[i].x<0){
+					if(curr.body[i].y+1>=col)canRight=false;
+					if(curr.body[i].y<=0)canLeft=false;
+					continue;
+				}
+				if(curr.body[i].y+1>=col||vis[curr.body[i].x][curr.body[i].y+1])canRight=false;
+				if(curr.body[i].y<=0||vis[curr.body[i].x][curr.body[i].y-1])canLeft=false;
+				if(curr.body[i].x+1>=row||vis[curr.body[i].x+1][curr.body[i].y])canDown=false;
+				if(curr.center===0){canRotate=false;continue;}
+				var dx=curr.body[i].x-curr.center.x;
+				var dy=curr.body[i].y-curr.center.y;
+				if(curr.center.x+dy>=row||curr.center.y-dx<0||curr.center.y-dx>=col||
+				curr.center.x+dy<0||vis[curr.center.x+dy][curr.center.y-dx])canRotate=false;		
+			};
+		}
+		function clear(){
+			var low=row,high=0;
+			for(var i in curr.body){
+				if(curr.body[i].x<low)low=curr.body[i].x;
+				if(curr.body[i].x>high)high=curr.body[i].x;
+			}
+			//if(highLine<0)highLine=0;
+			//for(var x=highLine;x<row;x++){
+			for(var x=low;x<=high;x++){
+				var canClear=true;
+				//var x=curr.body[i].x;
+				for(var j in vis[x]){
+					if(!vis[x][j]){
+						canClear=false;
+						break;
+					};
+				}
+				if(canClear){	
+					for(var j=0;j<col;j++){
+						paintCell({x:x,y:j,},bColor);
+						vis[x][j]=false;
+					}
+					for(var k=x-1;k>=highLine;k--){
+						for(var j=0;j<col;j++){
+							if(vis[k][j]){
+								fall({x:k,y:j,});							
+								if(k<row-1)vis[k+1][j]=true;
+								if(k>=0)vis[k][j]=vis[k-1][j];
+							};
+						};				
+					}
+					highLine++;
+				}
+			}
+		}
+		function fall(p){
+			var color=cell[p.x][p.y].css("background-color");
+			paintCell(p,bColor);p.x++;
+			paintCell(p,color);
+		}
+		function isOver(){
+			for(var i in curr.body){
+				if(curr.body[i].x<=0){
+					return true;
+				}
+			}
+		}
+	</script>
+  </head>  
+  <body>
+    <div id="left"></div>
+    <div id="main">
+    	<div id="game">
+    		<table>
+    		</table>
+    		<div id="info">
+    		</div>
+    	</div>
+    </div>
+  </body>
+</html>

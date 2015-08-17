@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MyHtml.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+    <script src="jquery-1.4.3.js"></script>
+    <script type="text/javascript">
+    	$("document").ready(function(){
+    		$("#all").attr("checked",false);
+    		$("#add").click(function(){
+    			var table=$("table");
+    			var tr=$("<tr></tr>").mouseover(function(){
+    				tr.css("background-color","red");
+    			}).mouseout(function(){
+    				tr.css("background-color","#fff");
+    			});
+    			table.append(tr);
+    			var td=new Array($("<td></td>"),$("<td></td>"),$("<td></td>"),$("<td></td>"));
+    			td[0].append("<input type='checkbox'/>")
+    			.css("text-align","center");
+    			var name=$("#name").attr("value");
+    			td[1].html(name).css("text-align","center");
+    			var birth=$("#birthday").attr("value");
+    			td[2].html(birth).css("text-align","center");
+    			var del=$("<button>delete</button>").click(function(){
+    				tr.remove();
+    			});
+    			td[3].append(del).css("text-align","center");
+    			for(var i in td){
+    				tr.append(td[i]);
+    			}
+    		});
+    		$("#all").change(function(){
+    			$(":input[type=checkbox]").attr("checked",$("#all").attr("checked"));
+    		});
+    		$("#del").click(function(){
+    			$("#all").attr("checked",false);
+    			$(":checked[checked=true][id!=all]").parent().parent().remove();
+    		});
+    	});
+         </script>
+
+  </head>
+  
+  <body>
+    <p align="center"><strong>姓名</strong>
+<input id="name"/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<strong> 	出生年月</strong>
+<input type="text" id="birthday"/>
+	&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" id="add" >添加</button>
+</p>
+    <hr size="10" color="blue" />
+	<table id="table" width="500px" border="1px" align="center">
+	  <tr>
+	    <th scope="col" width="10%"><input id="all" type="checkbox" checked="checked"/></th>
+	    <th nowrap scope="col" width="40%">姓名</th>
+	    <th nowrap scope="col" width="40%">出生年月</th>
+	    <th nowrap scope="col" width="10%" ><button type="button" id="del">删除选中项</button></th>
+      </tr>
+
+</table>
+  </body>
+</html>

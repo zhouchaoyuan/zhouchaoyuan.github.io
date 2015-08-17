@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>贪吃蛇.html</title>
+	
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+    <style type="text/css">
+    div,body{
+    	float:left;
+    	position: relative;
+    	margin: 0px;
+    	padding: 0px;
+    }
+   	body{
+   		position: absolute;
+    	width:100%;
+    	height:100%;
+    }
+    #menu{
+    	width: 20%;
+    	height:94%;
+    }
+    #game{
+    	width:80%;
+    	height:94%;
+    	background-color:#888;
+    }
+    table{
+    	background-color:white;
+    	border:3px black solid;   	
+    }
+    button{
+    	align:center;
+    	font-size:20px;
+    	width:50%;
+    }
+	#foot{
+		width:100%;
+		height:6%;
+		font-size:20px;
+		background-color:#069;
+		text-align:center;
+	}
+    </style>
+	<script src="jquery-1.4.3.js"></script>
+    <script type="text/javascript">
+    	var col=50,row=40,cellWidth=10;
+    	var cell=new Array(row);
+    	var snake,egg,emptyCell=new Array(row*col),score=0;
+    	var left={x:0,y:-1};
+    	var right={x:0,y:1};
+    	var up={x:-1,y:0};
+    	var down={x:1,y:0};
+		var eggColor="black",snakeColor="green",headColor="red",gameBackgroundColor="#fff";
+    	//var keyBuff=new Array(right);
+    	var time=100;
+    	$(document).ready(function(){	
+    		$("button").click(function(){
+    			var ht=$(this).html();
+    			$("button").css("background-color","#bbb");
+    			$("button:contains("+ht+")").css("background-color","red");
+    			if("快"===ht){
+    				time=10;
+    			}else if("中"===ht){
+    				time=50;
+    			}else if("慢"===ht){
+    				time=100;
+    			}
+    		});
+	    	var table=$("table");
+	    	for(var i=0;i<row;i++){
+	    		r=$("<tr></tr>").css("height",cellWidth);
+	    		cell[i]=new Array(col);
+	    		for(var j=0;j<col;j++){
+	    			c=$("<td></td>").css("width",cellWidth-2);
+	    			r.append(c);
+	    			cell[i][j]=c;
+	    			emptyCell[i*col+j]=c;
+	    		}	
+	    		table.append(r);
+	    	}
+	    	var gw=parseInt($("#game").css("height"));
+	    	var tw=parseInt(table.css("height"));
+	    	table.css("margin-top",(gw-tw)/2);
+	    	snake=initSnake();
+	    	go();
+	    	addEgg();
+	    	$(window).keydown(function(event){
+	    		if(event.keyCode==37&&snake.dir.y==0)snake.dir=left;
+	    		if(event.keyCode==39&&snake.dir.y==0)snake.dir=right;
+	    		if(event.keyCode==38&&snake.dir.x==0)snake.dir=up;
+	    		if(event.keyCode==40&&snake.dir.x==0)snake.dir=down;  		
+	    		return false;
+    		});
+    	});
+    	function initSnake(){
+    		var n0={x:row/4,y:col/5-3};
+    		var n1={x:row/4,y:col/5-2};
+    		var n2={x:row/4,y:col/5-1};
+    		var n3={x:row/4,y:col/5};
+    		var s={node:new Array(n0,n1,n2,n3),dir:right};
+    		var color=snakeColor;
+    		for(var i in s.node){
+    			emptyCell.splice(n0.x*col+n0.y, 1);
+    			if(i==s.node.length-1)color=headColor;
+    			cell[s.node[i].x][s.node[i].y].css("background-color",color);
+    		}
+    		return s;
+    	}		  
+    	function go(){
+    		var node=snake.node;
+    		var head=node[node.length-1];
+    		var h={x:head.x+snake.dir.x,y:head.y+snake.dir.y};
+    		
+    		if(h.x<0||h.y<0||h.x>=row||h.y>=col){
+    			//alert("撞墙 gameover");
+    			//return;
+				//穿墙
+				h.x=(h.x+row)%row;
+				h.y=(h.y+col)%col;
+    		}
+			var index=$.inArray(cell[h.x][h.y],emptyCell);
+			if(index<0){
+				if(h.x==node[node.length-2].x&&h.y==node[node.length-2].y){
+					setTimeout(go,time);
+				}
+				else alert("自杀 gameover");
+    			return;
+			}
+    		cell[head.x][head.y].css("background-color",snakeColor);
+    		cell[h.x][h.y].css("background-color",headColor);
+    		node.push(h);		
+    		emptyCell.splice(index,1);
+    		if(cell[h.x][h.y]===egg){
+    			addEgg();
+    			score+=10;
+    			$("#score").html("<strong>"+score+"</score>");
+    		}else{
+	    		var tear=cell[node[0].x][node[0].y].css("background-color",gameBackgroundColor);
+	    		emptyCell.push(tear);
+	    		node.shift();	
+    		}
+    		timeoutId=setTimeout(go,time);
+    	}
+    	function addEgg(){
+    		var index=Math.floor(Math.random()*emptyCell.length);
+    		egg=emptyCell[index].css("background-color",eggColor);
+    	}
+    </script>
+  </head>
+  
+  <body>
+  	<div id="menu" align="center">
+  	<strong style="font-size:30px;">score:</strong><br/>
+  	<span id="score" style="font-size:30px;"><strong>0</strong></span>
+  	<hr style="border:1px solid #f0f;"/>
+  	<strong style="font-size:30px;">速度等级</strong><br/>
+  	<button >快</button><br/>
+  	<button>中</button><br/>
+  	<button>慢</button><br/>
+  	</div>
+  	<div id="game"> 	
+  	<table cellspacing="0px" align="center">		
+  	</table>
+  	</div>
+    <div id="foot"><strong>版本1.0&nbsp;&nbsp;&nbsp;&copy;1443704625@qq.com</strong></div>
+  </body>
+</html>
