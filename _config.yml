@@ -1,5 +1,5 @@
 # Where things are
-source:       ./Blog
+source:       .
 destination:  ./_site
 plugins:      ./_plugins
 layouts:      ./_layouts
@@ -30,7 +30,7 @@ excerpt_separator: "\n\n"
 detach:       false
 port:         4000
 host:         127.0.0.1
-baseurl:      "/Blog" # does not include hostname
+baseurl:      "" # does not include hostname
 
 # Outputting
 permalink:     date
@@ -40,9 +40,9 @@ timezone:      null
 
 #Site config
 title: 周朝苑的个人主页
-description: Just another Jekyll theme design and code by zhanxin.info.
+description: Just a Jekyll theme uesd by zhouchaoyuan.
 keywords: Jekyll Theme
-url: http://zhouchaoyuan.github.io/Blog
+url: http://zhouchaoyuan.github.io
 feed: /atom.xml
 favicon: http://jekyllrb.com/favicon.png
 
@@ -82,10 +82,14 @@ follow:
 #Links
 customLinks:
   - item:
-    - text: liuxinglong
-      url: http://liuxinglong.github.io/Blog/
     - text: huanyueyaoqin
       url: http://huanyueyaoqin.com/
+    - text: wangkechun
+      url: http://blog.hi-hi.cn/#/
+    - text: fengzixu
+      url: http://fengzixu.net/
+    - text: liuxinglong
+      url: http://liuxinglong.github.io/Blog/
     - text: zhouchaoyuan
       url: http://blog.csdn.net/caoguo_app_android
     message: Friends
