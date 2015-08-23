@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Android学习
+title:  Asynctask使用小结 
 date:   2015-07-19 14:12:22
 category: "学习"
 ---
