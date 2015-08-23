@@ -7,7 +7,7 @@ category: "学习"
 
 当我们在编写java代码的时候，书写如下代码：
 
-[java] view plaincopyprint?
+
 
     url = new URL("https://github.com/");  
     URLConnection connecttion  = url.openConnection();  
@@ -32,7 +32,6 @@ SYN攻击属于DOS攻击的一种，它利用TCP协议缺陷，通过发送大�
 
 又如以下语句：
 
-[java] view plaincopyprint?
 
     connecttion.close();  
 
