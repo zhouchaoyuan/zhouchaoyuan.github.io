@@ -9,7 +9,7 @@ category: "学习"
 
 Asynctask的定义如下：
 
-[java] view plaincopyprint?
+
 
     public abstract class AsyncTask<Params, Progress, Result> //抽象类  
 
@@ -20,7 +20,7 @@ Asynctask的定义如下：
 
 必须要的：
 
-[java] view plaincopyprint?
+
 
     //在onPreExecute()完成后立即执行，用于执行较为费时的操作，一般我们在这里写代码，做操作  
     //此方法将接收输入参数和返回计算结果。在执行过程中可以调用publishProgress(Progress... values)来更新进度信息。  
@@ -39,7 +39,7 @@ Asynctask的定义如下：
 
 可选择实现的：
 
-[java] view plaincopyprint?
+
 
     //在调用publishProgress(Progress... values)时，此方法被执行，直接将进度信息更新到UI组件上。  
       
