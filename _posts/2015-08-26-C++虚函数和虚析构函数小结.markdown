@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  三次握手和四次挥手的小结
+title:  C++虚函数和虚析构函数小结
 date:   2015-08-26 23:14:22
 category: "学习"
 ---
