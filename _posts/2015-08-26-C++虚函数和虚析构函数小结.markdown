@@ -44,14 +44,14 @@ I am a handsome man!
 
 这个就不是我们所期望的，这个时候虚函数就派上用场了，我们在
 
-
+```c++
     public:  
         person(){};  
         virtual void say_something(){  
             std::cout<<"I am a handsome man!"<<std::endl;  
         }  
     };  
-
+```
 
 也就是说吧say_something声明成虚函数，这个时候输出的结果就是：
 
@@ -65,7 +65,7 @@ I am zhouchaoyuan
 
 接下来我们看看虚析构函数，重写上述代码如下
 
-
+```c++
     #include<iostream>  
     class person{  
     public:  
@@ -93,7 +93,7 @@ I am zhouchaoyuan
         delete p;  
         return 0;  
     }  
-
+```
 惊奇的发现输出：
 
 I am zhouchaoyuan<br>
@@ -103,7 +103,7 @@ The destructor in person
 
 这个时候我们可以很容易的解决这个问题，那就是吧基类的析构函数定义成虚函数，声明如下：
 
-
+```c++
     class person{  
     public:  
         person(){};  
@@ -115,7 +115,7 @@ The destructor in person
         }  
     };  
 
-
+```
 I am zhouchaoyuan<br>
 The destructor in zhouchaoyuan\<br>
 The destructor in person
