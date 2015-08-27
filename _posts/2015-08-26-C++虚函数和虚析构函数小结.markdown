@@ -10,7 +10,7 @@ category: "学习"
 被virtual关键字修饰的成员函数，虚函数用来实现运行时多态，指向基类的指针在操作它的多态类对象时，会根据不同的类对象，调用其相应的函数，这个函数就是虚函数。
 我们先来看一个例子吧
 
-```c++
+```cpp
     #include<iostream>  
     class person{  
     public:  
@@ -42,9 +42,12 @@ category: "学习"
 I am a handsome man!<br>
 I am a handsome man!
 
+```cpp
+std::cout<<"I am a handsome man!"<<std::endl;
+```
 这个就不是我们所期望的，这个时候虚函数就派上用场了，我们在
 
-```c++
+```cpp
     public:  
         person(){};  
         virtual void say_something(){  
@@ -65,7 +68,7 @@ I am zhouchaoyuan
 
 接下来我们看看虚析构函数，重写上述代码如下
 
-```c++
+```cpp
     #include<iostream>  
     class person{  
     public:  
@@ -103,7 +106,7 @@ The destructor in person
 
 这个时候我们可以很容易的解决这个问题，那就是吧基类的析构函数定义成虚函数，声明如下：
 
-```c++
+```cpp
     class person{  
     public:  
         person(){};  
@@ -117,7 +120,7 @@ The destructor in person
 
 ```
 I am zhouchaoyuan<br>
-The destructor in zhouchaoyuan\<br>
+The destructor in zhouchaoyuan<br>
 The destructor in person
 
 好了，好像看到了比较满意的结构了，因为子类终于被回收了！！！！总的来说虚析构函数就是为了当用一个基类的指针删除一个派生类的对象时，派生类的析构函数会被调用。
