@@ -1,0 +1,57 @@
+---
+layout: post
+title:  java中的堆内存和栈内存小结
+date:   2015-09-01 23:14:23
+category: "学习"
+---
+
+简单来说,我们程序运行时的内存分配有三种策略,分别是静态的,栈式的,和堆式的.
+其中栈式的和堆式是动态分配的，
+
+1、静态分配指在编译时就能确定每个数据目标在运行时刻的存储空间需求,因而在编译时就可以给他们分配固定的内存空间.
+
+2、动态分配是在过程入口处必须知道所有的存储要求
+
+堆主要存放对象，由new创建，栈主要存放引用和一些基本数据
+
+但是我们有一个特殊的包装类String，比如说如下的代码
+
+
+    String str1 = new String("zhouchaoyuan");  
+    String str2 = "zhouchaoyuan";  
+
+
+
+那么str1存放在堆里面，str2存放在栈里面（String的特殊之处），对于第一个句子我们的new必定会在堆内存中创建出来一个对象，
+
+对于第二个句子是先在栈中创建一个String类的对象的应用str2，然后查找栈中有没有存放“zhouchaoyuan”，如果有，直接令str2指向它，否则创建“zhouchaoyuan”放进栈中，并使str2指向它。
+
+
+修改代码如下：
+
+
+
+    String str1 = "zhouchaoyuan";  
+    String str2 = "zhouchaoyuan";  
+    System.out.println(str1==str2); ///true  
+
+
+
+显然这两个引用指向同一个对象，所以是相等的
+
+
+另外修改代码如下：
+
+
+
+    String str1 =new String ("zhouchaoyuan");  
+      
+    String str2 =new String ("zhouchaoyuan");  
+      
+    System.out.println(str1==str2); // false  
+
+
+
+str1和str2指向不同的对象，所以是不相等的，但是str1.equals(str2)是可以返回true的
+
+第二种方式创建多个”zhouchaoyuan”字符串,在内存中其实只存在一个对象而已.这种写法有利与节省内存空间.同时它可以在一定程度上提高程序的运行速度，因为JVM会自动根据栈中数据的实际情况来决定是否有必要创建新对象。而对于String str = new String("abc")；的代码，则一概在堆中创建新对象，而不管其字符串值是否相等，是否有必要创建新对象，从而加重了程序的负担。
