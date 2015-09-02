@@ -50,8 +50,8 @@ D 56
 否则必须为n的倍数。
 
 ps：
-#pragma pack(push) //保存对齐状态
-#pragma pack(4)//设定为4字节对齐
+#pragma pack(push) //保存对齐状态</br>
+#pragma pack(4)//设定为4字节对齐</br>
 #pragma pack(pop)//恢复对齐状态
 
 
