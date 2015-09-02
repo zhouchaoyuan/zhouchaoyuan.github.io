@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  java中的堆内存和栈内存小结
+title:  linux下配置使用git和github
 date:   2015-03-04 20:45:45
 category: "学习"
 ---
@@ -10,18 +10,15 @@ First：Set Up Git
 
 1、首先安装git，在终端输入：
 
-
     sudo apt-get install git  
 
 2、接下来是认证用户名：
-
 
     git config --global user.name "YOUR NAME"  
 
 其中引号里面要填写的就是自己的用户名
 
 3、认证邮箱：
-
 
     git config --global user.email "your@mail.com"  
 
@@ -32,12 +29,11 @@ First：Set Up Git
 
 a、产生公钥：
 
-
     ssh-keygen -t rsa -C "your_email@example.com"  
 
 其中   -C "your_email@example.com"   可以不要
 
-输入命令后会有三个选项，github建议都采取默认，也就是按下三次enter        详细见：  Generating SSH keys
+输入命令后会有三个选项，github建议都采取默认，也就是按下三次enter        详细见：  <a href="https://help.github.com/articles/generating-ssh-keys/" target="_blank">Generating SSH keys</a>
 
 按下三次后产生的公钥会在~/.ssh/目录下的id_rsa.pub，采用如下命令获得密钥
 
@@ -67,13 +63,11 @@ Fourth：Be Social
 
 1、创建一个目录，并进入目录初始化库：
 
-
     mkdir zhou  
     cd zhou  
     git init  
 
 这样在zhou这个目录下就会有一个.git的隐藏目录，可以用如下命令查看：
-
 
     ls -a  
 
@@ -86,22 +80,18 @@ Fourth：Be Social
 
 3、编辑完成之后就可以将文件提交到git缓冲区（index），命令如下：
 
-
     git add 1000.cpp  
 
 上面命令添加了一个，也可以添加全部，命令如下，注意有一个点：
-
 
     git add .  
 
 4、然后将缓冲区（index）的修改提交到head：
 
-
     git commit -m "first commit"  
 
 
 5、最后一步是提交到远程仓库：
-
 
     git push origin master  
 
