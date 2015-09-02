@@ -74,7 +74,7 @@
                 </div>
                 <div class="aside">
                     <div class="aside-contact">
-                        <h4 class="title">About me</h4>
+                        <h4 class="title">关于本人</h4>
                         <div class="det fn-clear">
                             <div class="det-image">
                                 <img src="{{ site.author.imageLink }}" />
@@ -86,7 +86,7 @@
                     </div>
 
                     <div class="aside-item">
-                        <h4 class="title">Recent Posts</h4>
+                        <h4 class="title">最近发表</h4>
                         <ul class="list">
                             {% for rpost in site.posts limit:6  %}
                                 <li><a href="{{ site.url }}{{ rpost.url }}" title="{{ rpost.title }}" rel="bookmark">{{ rpost.title }}</a></li>
@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="aside-item">
-                        <h4 class="title">Links</h4>
+                        <h4 class="title">朋友链接</h4>
                         <ul class="list">
                             {% for i in site.customLinks %}
                                 {% if i.message == "Friends" %}
