@@ -8,7 +8,7 @@ category: "程序员"
 一面：<br/>
 进程线程的区别？线程在进程中的起点和末点地址？进程如何调度？死锁？如何避免？<br/>ipc机制？在word里面选中文字然后按住ctrl+c发生什么，然后打开记事本按住ctrl+v又发生什么？<br/>
 链表找倒数第k个节点？（写代码）二叉树最远叶子节点距离？（写代码）<br/>
-Activity生命周期，画出整个流程，然后Activity重建发生什么？<br/>
+Activity生命周期和画出整个流程，然后Activity重建发生什么？<br/>
 Asynctask和handlemessage机制<br/>
 Activity四种启动机制。描述分别是怎样的？<br/>
 
