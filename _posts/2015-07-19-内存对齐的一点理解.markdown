@@ -6,18 +6,18 @@ category: "学习"
 ---
 
 前段时间在做面试题的时候碰到这样的一个题目，根据我的大概印象应该是这个样子的
-```c++
-#pragma pack(pop)
-struct A{
-	char a;
-	int b;
-	float c;
-	double d;
-	double *aa;
-	char * dd;
-	short e;
-};
-```
+
+    #pragma pack(pop)
+    struct A{
+    	char a;
+    	int b;
+    	float c;
+    	double d;
+    	double *aa;
+    	char * dd;
+    	short e;
+    };
+
 
 然后询问sizeof(A)是多少？下面给出了几个选项
 
@@ -81,33 +81,32 @@ n==8==sizeof(double)，所以总大小必须是8的倍数，那么最后面补�
 
 另外如果代码如下
 
-```c++
-#pragma pack(4)  
-struct A{  
-    char a;  
-    int b;  
-    float c;  
-    double d;  
-    double *aa;  
-    char * dd;  
-    short e;  
-};
-``` 
+
+	#pragma pack(4)  
+	struct A{  
+	    char a;  
+    	int b;  
+    	float c;  
+    	double d;  
+    	double *aa;  
+    	char * dd;  
+    	short e;  
+	};
+
 
 那么，sizeof(A)==32，也是根据前面的规则，注意#pragma pack(4)
 
 再看一下这个
 
-```c++
-struct A  
-{  
-    int a:1;  
-    int d:4;  
-    char b:1;  
-    int c:3;  
 
-};
-```
+	struct A  
+	{  
+	    int a:1;  
+	    int d:4;  
+	    char b:1;  
+	    int c:3;  
+	};
+
 
 sizeof(A)等于多少呢？
 
