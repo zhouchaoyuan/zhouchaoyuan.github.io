@@ -10,54 +10,54 @@ category: "学习"
 被virtual关键字修饰的成员函数，虚函数用来实现运行时多态，指向基类的指针在操作它的多态类对象时，会根据不同的类对象，调用其相应的函数，这个函数就是虚函数。
 我们先来看一个例子吧
 
-
-    #include<iostream>  
-    class person{  
-    public:  
-        person(){};  
-        void say_something(){  
-            std::cout<<"I am a handsome man!"<<std::endl;  
-        }  
-    };  
-    class zhouchaoyuan:public person{  
-    public:  
-        zhouchaoyuan(){};  
-        void say_something(){  
-            std::cout<<"I am zhouchaoyuan"<<std::endl;  
-        }  
-    };  
-    int main(){  
-        person object1;  
-        zhouchaoyuan object2;  
-        person *p1=&object1;  
-        person *p2=&object2;  
-        p1->say_something();  
-        p2->say_something();  
-        return 0;  
+```c++
+#include<iostream>  
+class person{  
+public:  
+    person(){};  
+    void say_something(){  
+        std::cout<<"I am a handsome man!"<<std::endl;  
     }  
-
+};  
+class zhouchaoyuan:public person{  
+public:  
+    zhouchaoyuan(){};  
+    void say_something(){  
+        std::cout<<"I am zhouchaoyuan"<<std::endl;  
+    }  
+};  
+int main(){  
+    person object1;  
+    zhouchaoyuan object2;  
+    person *p1=&object1;  
+    person *p2=&object2;  
+    p1->say_something();  
+    p2->say_something();  
+    return 0;  
+} 
+```
 
 结果居然是：
 
-I am a handsome man!<br>
-I am a handsome man!
-
+	I am a handsome man!<br>
+	I am a handsome man!
 
 这个就不是我们所期望的，这个时候虚函数就派上用场了，我们在
 
 
-    public:  
-        person(){};  
-        virtual void say_something(){  
-            std::cout<<"I am a handsome man!"<<std::endl;  
-        }  
-    };  
-
+```c++
+public:  
+    person(){};  
+    virtual void say_something(){  
+        std::cout<<"I am a handsome man!"<<std::endl;  
+    }  
+}; 
+``` 
 
 也就是说吧say_something声明成虚函数，这个时候输出的结果就是：
 
-I am a handsome man!<br>
-I am zhouchaoyuan
+	I am a handsome man!
+	I am zhouchaoyuan
 
 有没有感觉好神奇，为什么会这样呢？
 
@@ -66,59 +66,60 @@ I am zhouchaoyuan
 
 接下来我们看看虚析构函数，重写上述代码如下
 
-
-    #include<iostream>  
-    class person{  
-    public:  
-        person(){};  
-        ~person(){  
-            std::cout<<"The destructor in person"<<std::endl;  
-        };  
-        virtual void say_something(){  
-            std::cout<<"I am a handsome man!"<<std::endl;  
-        }  
+```c++
+#include<iostream>  
+class person{  
+public:  
+    person(){};  
+    ~person(){  
+        std::cout<<"The destructor in person"<<std::endl;  
     };  
-    class zhouchaoyuan:public person{  
-    public:  
-        zhouchaoyuan(){};  
-        ~zhouchaoyuan(){  
-            std::cout<<"The destructor in zhouchaoyuan"<<std::endl;  
-        };  
-        void say_something(){  
-            std::cout<<"I am zhouchaoyuan"<<std::endl;  
-        }  
-    };  
-    int main(){  
-        person *p=new zhouchaoyuan();  
-        p->say_something();  
-        delete p;  
-        return 0;  
+    virtual void say_something(){  
+        std::cout<<"I am a handsome man!"<<std::endl;  
     }  
+};  
+class zhouchaoyuan:public person{  
+public:  
+    zhouchaoyuan(){};  
+    ~zhouchaoyuan(){  
+        std::cout<<"The destructor in zhouchaoyuan"<<std::endl;  
+    };  
+    void say_something(){  
+        std::cout<<"I am zhouchaoyuan"<<std::endl;  
+    }  
+};  
+int main(){  
+    person *p=new zhouchaoyuan();  
+    p->say_something();  
+    delete p;  
+    return 0;  
+}  
+```
 
 惊奇的发现输出：
 
-I am zhouchaoyuan<br>
-The destructor in person
+	I am zhouchaoyuan
+	The destructor in person
 
 当用一个基类的指针删除一个派生类的对象时，派生类的析构函数不会被调用。而我们的析构函数是用来回收内存的，如果析构函数没有被调用，那就是说当前对象占用的内存不会被回收，也就是说造成了内存泄露，这个是很危险的。
 
 这个时候我们可以很容易的解决这个问题，那就是吧基类的析构函数定义成虚函数，声明如下：
 
-
-    class person{  
-    public:  
-        person(){};  
-        virtual ~person(){  
-            std::cout<<"The destructor in person"<<std::endl;  
-        };  
-        virtual void say_something(){  
-            std::cout<<"I am a handsome man!"<<std::endl;  
-        }  
+```c++
+class person{  
+public:  
+    person(){};  
+    virtual ~person(){  
+        std::cout<<"The destructor in person"<<std::endl;  
     };  
+    virtual void say_something(){  
+        std::cout<<"I am a handsome man!"<<std::endl;  
+    }  
+};  
+```
 
-
-I am zhouchaoyuan<br>
-The destructor in zhouchaoyuan<br>
-The destructor in person
+	I am zhouchaoyuan<br>
+	The destructor in zhouchaoyuan<br>
+	The destructor in person
 
 好了，好像看到了比较满意的结构了，因为子类终于被回收了！！！！总的来说虚析构函数就是为了当用一个基类的指针删除一个派生类的对象时，派生类的析构函数会被调用。

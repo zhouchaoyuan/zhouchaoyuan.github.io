@@ -19,13 +19,15 @@ category: "学习"
 
 和`Activity`一样，我们必须要注册`service`，需添加`<service>`元素作为`<application>`元素的子元素。例如：
 
-	<manifest ... >
-		...
-		<application ... >
-			<service android:name=".ExampleService" />
-			...
-		</application>
-	</manifest>
+```xml
+<manifest ... >
+    ...
+    <application ... >
+        <service android:name=".ExampleService" />
+        ...
+    </application>
+</manifest>
+```
 
 具体的标签使用见[`<service>`](http://developer.android.com/intl/zh-cn/guide/topics/manifest/service-element.html)
 
@@ -65,63 +67,61 @@ category: "学习"
 组件通过调用`startService()`启动，并且回调`Service`的`onStartCommand()`方法，下面示例：
 
 ```java
+package cn.zhouchaoyuan.component;
+import android.app.Service;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
+public class ExampleService extends Service{
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 
-	package cn.zhouchaoyuan.component;
-	import android.app.Service;
-	import android.content.Intent;
-	import android.os.Handler;
-	import android.os.IBinder;
-	import android.os.Message;
-	import android.support.annotation.Nullable;
-	import android.util.Log;
-	import android.widget.Toast;
-	public class ExampleService extends Service{
-	    @Nullable
-    	@Override
-    	public IBinder onBind(Intent intent) {
-    	    return null;
-    	}
-	
-    	@Override
-    	public void onCreate() {
-    	    super.onCreate();
-    	}
-	
-    	@Override
-    	public int onStartCommand(Intent intent, int flags, int startId) {
-    	    final int MyToast = 1;
-    	    final Handler handler = new Handler(){
-    	        @Override
-    	        public void handleMessage(Message msg) {
-    	            switch (msg.what){
-    	                case MyToast:
-    	                    Toast.makeText(ExampleService.this,"开始服务",Toast.LENGTH_LONG).show();
-                        	break;
-                    	default:
-                        	break;
-                	}
-            	}
-        	};
-	
-        	new Thread(new Runnable() {
-            	@Override
-            	public void run() {
-            	    Log.e("ExampleService", "ExampleService");
-            	    Message msg = new Message();
-            	    msg.what = MyToast;
-            	    handler.sendMessage(msg);
-            	    stopSelf();//在service本身内自动停止，也可以在组件中使用stopService()
-            	}
-        	}).start();
-        	return super.onStartCommand(intent, flags, startId);
-    	}
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
-    	@Override
-    	public void onDestroy() {
-	        super.onDestroy();
-	    }
-	}
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        final int MyToast = 1;
+        final Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what){
+                    case MyToast:
+                        Toast.makeText(ExampleService.this,"开始服务",Toast.LENGTH_LONG).show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("ExampleService", "ExampleService");
+                Message msg = new Message();
+                msg.what = MyToast;
+                handler.sendMessage(msg);
+                stopSelf();//在service本身内自动停止，也可以在组件中使用stopService()
+            }
+        }).start();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+}
 ```
 
 上述`onStartCommand()`方法必须返回整型数。整型数是一个值，用于描述系统应该如何在服务终止的情况下继续运行服务（如上所述，IntentService 的默认实现将为您处理这种情况，不过您可以对其进行修改）。从`onStartCommand()`返回的值必须是以下常量之一：
@@ -133,15 +133,15 @@ category: "学习"
 然后在Activity调用：
 
 ```java
-
-	Intent intent = new Intent(this, ExampleService.class);
-	startService(intent);
-
+Intent intent = new Intent(this, ExampleService.class);
+startService(intent);
 ```
 
 另外，注册Service是必不可少的：
 
+```xml
 	<service android:name="cn.zhouchaoyuan.component.ExampleService"></service>
+```
 
 ####扩展IntentService
 
@@ -156,40 +156,36 @@ category: "学习"
 下面实现一个`IntentService`：
 
 ```java
+package cn.zhouchaoyuan.component;
+import android.app.IntentService;
+import android.content.Intent;
+import android.util.Log;
+public class ExampleIntentService extends IntentService{
 
-	package cn.zhouchaoyuan.component;
-	import android.app.IntentService;
-	import android.content.Intent;
-	import android.util.Log;
-	public class ExampleIntentService extends IntentService{
-	
-    	public ExampleIntentService() {
-    	    super("ExampleIntentService");
-    	}
-	
-    	@Override
-    	protected void onHandleIntent(Intent intent) {
-    	    Log.e("CurrentThreadId",Thread.currentThread().getId()+"");//查看是否自动开启线程
-    	}
-	
-    	@Override
-    	public void onDestroy() {
-    	    super.onDestroy();
-			//查看是否自动销毁，打印主线程的编号
-    	    Log.e("CurrentThreadId", Thread.currentThread().getId() + " have stopped auto!");
-    	}
-	}
+    public ExampleIntentService() {
+        super("ExampleIntentService");
+    }
 
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        Log.e("CurrentThreadId",Thread.currentThread().getId()+"");//查看是否自动开启线程
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //查看是否自动销毁，打印主线程的编号
+        Log.e("CurrentThreadId", Thread.currentThread().getId() + " have stopped auto!");
+    }
+}
 ```
 
 然后在Activity调用：
 
 ```java
-
-	Intent intent = new Intent(this, ExampleIntentService.class);
-    Log.e("CurrentThreadId",Thread.currentThread().getId()+"");//查看是否自动开启线程
-    startService(intent);
-
+Intent intent = new Intent(this, ExampleIntentService.class);
+Log.e("CurrentThreadId",Thread.currentThread().getId()+"");//查看是否自动开启线程
+startService(intent);
 ```
 
 另外，注册Service是必不可少的：
@@ -211,41 +207,37 @@ category: "学习"
 创建一个`ServiceConnection`（在这里是内部类）并绑定一个服务：
 
 ```java
-
-	class ZcyConnection implements ServiceConnection {//第二个参数
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            ExampleService.ZcyBinder myBind = (ExampleService.ZcyBinder) service;
-            myBind.work();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) { }        ;
-    }
-    public void StartBindService(View v){
-        Intent intent = new Intent(this, ExampleService.class);
-        ZcyConnection connection = new ZcyConnection();
-        bindService(intent, connection, BIND_AUTO_CREATE);
+class ZcyConnection implements ServiceConnection {//第二个参数
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        ExampleService.ZcyBinder myBind = (ExampleService.ZcyBinder) service;
+        myBind.work();
     }
 
+    @Override
+    public void onServiceDisconnected(ComponentName name) { }        ;
+}
+public void StartBindService(View v){
+    Intent intent = new Intent(this, ExampleService.class);
+    ZcyConnection connection = new ZcyConnection();
+    bindService(intent, connection, BIND_AUTO_CREATE);
+}
 ```
 
 修改`ExampleService.java`如下：
 
 ```java
-
-	public class ZcyBinder extends Binder {
-        public void work(){
-            Log.e(this.getClass().getSimpleName(),"downloading");
-        }
+public class ZcyBinder extends Binder {
+    public void work(){
+        Log.e(this.getClass().getSimpleName(),"downloading");
     }
+}
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return new ZcyBinder();
-    }
-
+@Nullable
+@Override
+public IBinder onBind(Intent intent) {
+    return new ZcyBinder();
+}
 ```
 
 绑定服务的生命流程图：</br>

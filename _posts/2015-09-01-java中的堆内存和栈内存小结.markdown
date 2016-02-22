@@ -16,11 +16,10 @@ category: "学习"
 
 但是我们有一个特殊的包装类String，比如说如下的代码
 
-
-    String str1 = new String("zhouchaoyuan");  
-    String str2 = "zhouchaoyuan";  
-
-
+```java
+String str1 = new String("zhouchaoyuan");  
+String str2 = "zhouchaoyuan";
+```
 
 那么str1存放在堆里面，str2存放在栈里面（String的特殊之处），对于第一个句子我们的new必定会在堆内存中创建出来一个对象，
 
@@ -29,28 +28,24 @@ category: "学习"
 
 修改代码如下：
 
-
-
-    String str1 = "zhouchaoyuan";  
-    String str2 = "zhouchaoyuan";  
-    System.out.println(str1==str2); ///true  
-
-
+```java
+String str1 = "zhouchaoyuan";  
+String str2 = "zhouchaoyuan";  
+System.out.println(str1==str2); ///true 
+```
 
 显然这两个引用指向同一个对象，所以是相等的
 
 
 另外修改代码如下：
 
+```java
+String str1 =new String ("zhouchaoyuan");  
 
+String str2 =new String ("zhouchaoyuan");  
 
-    String str1 =new String ("zhouchaoyuan");  
-      
-    String str2 =new String ("zhouchaoyuan");  
-      
-    System.out.println(str1==str2); // false  
-
-
+System.out.println(str1==str2); // false  
+```
 
 str1和str2指向不同的对象，所以是不相等的，但是str1.equals(str2)是可以返回true的
 

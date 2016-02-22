@@ -7,11 +7,10 @@ category: "学习"
 
 当我们在编写java代码的时候，书写如下代码：
 
-
-
-    url = new URL("https://github.com/");  
-    URLConnection connecttion  = url.openConnection();  
-
+```java
+url = new URL("https://github.com/");  
+URLConnection connecttion  = url.openConnection();  
+```
 
 执行上述语句之后到底发生了什么，显然先将连接包装成为一个URL对象，然后通过openConnection()打开连接，而打开连接的时候发生了什么呢，这里就用到了我们常说的TCP协议的三次握手，具体如下：
 
@@ -32,9 +31,9 @@ SYN攻击属于DOS攻击的一种，它利用TCP协议缺陷，通过发送大�
 
 又如以下语句：
 
-
-    connecttion.close();  
-
+```java
+connecttion.close();  
+```
 
 这句话是用来终止一个TCP协议链接，因为这个关闭时全双工的，所以需要客户端和服务端总共发送4个包以确认连接的断开。当传输数据的某一方完成了数据的传送时，它可以单方面的来关闭数据的传送，这时候发生FIN来终止这个方向的连接，对方收到这个FIN就代表这个方向上结束数据的传输，当然另外一个方面有可能还没有结束。具体过程如下：
 

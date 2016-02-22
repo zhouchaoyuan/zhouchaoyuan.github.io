@@ -37,7 +37,6 @@ category: "学习"
 
 
 ```java
-
 package cn.zhouchaoyuan.customview.pager;
 
 import android.content.Context;
@@ -344,13 +343,11 @@ public class MyViewPager extends ViewGroup {
         }
     }
 }
-
 ```
 
 上面的自定义View写完了，接下来就是使用了，新建一个Activity，其xml文件`activity_pager_demo.xml`如下：
 
 ```xml
-
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -364,13 +361,11 @@ public class MyViewPager extends ViewGroup {
         android:layout_height="match_parent"></cn.zhouchaoyuan.customview.pager.MyViewPager>
 
 </FrameLayout>
-
 ```
 
 `java`文件`PagerDemo.java`如下:
 
 ```java
-
 package cn.zhouchaoyuan.customview.pager;
 
 import android.support.v7.app.AppCompatActivity;
@@ -460,7 +455,6 @@ public class PagerDemo extends AppCompatActivity {
                     "3、点击OK或者Apply就可以自动检查更新了\n"
 	};
 }
-
 ```
 
 上面代码借鉴了几个例子，后来发现郭老师有一个实现挺简单的，[记下](http://blog.csdn.net/guolin_blog/article/details/48719871)。
