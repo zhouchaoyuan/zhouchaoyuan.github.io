@@ -1,3 +1,10 @@
+---
+layout: post
+title:  RoboGuice学习笔记
+date:   2016-03-25 16:45:55
+category: "学习"
+---
+
 RoboGuice是基于Guice库开发，目的为Android提供一套简单易用的依赖注入框架，而Google Guice提供了Java平台上一个轻量级的 Dependency injection 框架，并可以支持开发Android应用。它降低了代码中new和Factory方法的使用，采用@Inject来替代，虽然有时候还需要写一些Factory方法，不过我们的代码不会依赖这些代码来创建实例，这使得单元测试和代码重用变得更方便。（这个以后慢慢体会吧）
 
 一、接入
