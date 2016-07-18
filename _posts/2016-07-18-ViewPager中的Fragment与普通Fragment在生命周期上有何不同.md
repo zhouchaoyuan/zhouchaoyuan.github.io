@@ -260,6 +260,7 @@ onSaveInstanceState在很多情况下都不在调用，为啥？见[这里](http
         savedState = saveState();
         if(savedState != null){
             Bundle bundle = getArguments();
+            if(bundle == null) return ;
             bundle.putBundle("savedViewState",savedState);
         }
     }
@@ -287,6 +288,7 @@ onSaveInstanceState在很多情况下都不在调用，为啥？见[这里](http
     }
     private boolean restoreStateFromArguments(){//返回false代表第一次进入
         Bundle bundle = getArguments();
+        if(bundle == null)return false;
         savedState = bundle.getBundle("");
         if (savedState != null){
             restoreState();
