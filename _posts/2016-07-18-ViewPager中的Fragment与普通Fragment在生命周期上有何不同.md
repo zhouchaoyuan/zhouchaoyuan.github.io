@@ -243,3 +243,63 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 - 当Fragment被实例化过之后，如果已经不处于当前Fragment的刚好左/右两侧，那么它的onPause、onStop、onDestroyView会分别被调用
 - 当调用了onDestroyView的Fragment又重新被实例化的时候（即进入当前页的刚好左/右两侧），onCreateView和onViewCreated会被调用，然后刚好退出左/右两侧的Fragment走onPause、onStop、onDestroyView，之后那个刚好进入当前页的刚好左/右两侧的Fragment再走onStart和onResume
+
+
+###番外篇－－－－Fragment数据保存
+
+onSaveInstanceState在很多情况下都不在调用，为啥？见[这里](http://mp.weixin.qq.com/s?__biz=MzA4NTQwNDcyMA==&mid=2650661714&idx=2&sn=cdebaec04ddf630b024b659402497d95&scene=0#wechat_redirect)，不过onDestroyView在几乎所有的情况下都会调用，那么我们保存是否就考虑从onDestroyView入手，如下是保存数据的一些操作：
+
+```java
+	Bundle savedState;//每一个Fragment对应一个Bundle
+    private Bundle saveState(){//具体保存数据的操作
+        Bundle state = new Bundle();
+        state.putString("author","zhouchaoyuan");
+        return state;
+    }
+    private void saveStateToArguments(){
+        savedState = saveState();
+        if(savedState != null){
+            Bundle bundle = getArguments();
+            bundle.putBundle("savedViewState",savedState);
+        }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {//在onSaveInstanceState保存数据
+        super.onSaveInstanceState(outState);
+        saveStateToArguments();
+    }
+    @Override
+    public void onDestroyView() {//在onSaveInstanceState保存数据
+        super.onDestroyView();
+        saveStateToArguments();
+    }
+```
+
+从上面可以看到们选择把数据保存在Arguments中，把一些状态放进Bundle。
+
+接下来是恢复数据的部分，如下：
+
+```java
+    private void restoreState(){//恢复数据的真正操作部分
+        if(savedState != null){
+            String author = savedState.getString("author");
+        }
+    }
+    private boolean restoreStateFromArguments(){//返回false代表第一次进入
+        Bundle bundle = getArguments();
+        savedState = bundle.getBundle("");
+        if (savedState != null){
+            restoreState();
+            return true;
+        }
+        return false;
+    }
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if(!restoreStateFromArguments()){
+            //第一次进入做一些初始化操作
+        }
+    }
+```
+
+通过上面两个就能比较完美的保存Fragment里面的数据了。
