@@ -15,7 +15,7 @@ category: "学习"
 
 ###ViewPager中的Fragment的生命周期
 
-对于ViewPager中国年的Fragment是由Adapter控制的，对于在屏幕中的Fragment肯定是处于onResume状态的，那么处于左右两侧的Fragment又是怎么样的状态呢？我们来写一个Demo看看情况吧！
+对于ViewPager中的Fragment是由Adapter控制的，对于在屏幕中的Fragment肯定是处于onResume状态的，那么处于左右两侧的Fragment又是怎么样的状态呢？我们来写一个Demo看看情况吧！
 
 ####一个测试用的Fragment
 
