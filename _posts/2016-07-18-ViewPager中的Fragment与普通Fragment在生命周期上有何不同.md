@@ -244,6 +244,53 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 - 当Fragment被实例化过之后，如果已经不处于当前Fragment的刚好左/右两侧，那么它的onPause、onStop、onDestroyView会分别被调用
 - 当调用了onDestroyView的Fragment又重新被实例化的时候（即进入当前页的刚好左/右两侧），onCreateView和onViewCreated会被调用，然后刚好退出左/右两侧的Fragment走onPause、onStop、onDestroyView，之后那个刚好进入当前页的刚好左/右两侧的Fragment再走onStart和onResume
 
+###更新
+
+上面的demo是基于左右缓存各一页的情况，不过Viewpager还提供了一个`setOffscreenPageLimit(int limit)`这样的方法给我们，用来设置左右两个的缓存页面要多少页（默认limit是1），这样我们更好奇的就是这期间Fragment的生命周期还会不会用什么不同吗？
+
+首先我们先来看看`pager.setOffscreenPageLimit(2);`是怎么样的吧，运行demo，看到如下输出：
+
+```java
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment1.onAttach
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment1.onCreate
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment1.onCreateView
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment1.onViewCreated
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment1.onStart
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment1.onResume
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment2.onAttach
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment2.onCreate
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment2.onCreateView
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment2.onViewCreated
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment3.onAttach
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment3.onCreate
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment3.onCreateView
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment3.onViewCreated
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment2.onStart
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment2.onResume
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment3.onStart
+07-18 22:48:29.487 3707-3707/cn.zhouchaoyuan.example E/zhouchaoyuan happen in: TestUIFragment3.onResume
+```
+
+输出还是挺多的，可以看到Fragment1的生命周期相比之前是limit是1的时候没有太大的变化，不过Fragment2和Fragment3的生命周期交替调用了，Fragment2调用了onAttach-->onCreate-->onCreateView-->onViewCreated，之后Fragment3进行了同样的过程，然后Fragment2再次调用onStart-->onResume，然后Fragment3又进行了一样的过程。其实这个结果还是挺郁闷了，为什么缓存的Fragment的生命周期不一次性走到onResume呢？也许是onViewCreated调用了之后就把视图创建了，这样是先把所有Fragment的视图都创建了，然后再去走onStart和onResume？（是不是要几个todo？感觉一时半会出不来结果！）
+
+
+好了，接下来试一试`pager.setOffscreenPageLimit(0);`吧，运行，卧槽，居然和最开始的时候一样，我还以为这样不会缓存呢，然后查看一下源码，看到如下部分：
+
+```java
+    private static final int DEFAULT_OFFSCREEN_PAGES = 1;
+    public void setOffscreenPageLimit(int limit) {
+        if (limit < DEFAULT_OFFSCREEN_PAGES) {
+            Log.w(TAG, "Requested offscreen page limit " + limit + " too small; defaulting to " +
+                    DEFAULT_OFFSCREEN_PAGES);
+            limit = DEFAULT_OFFSCREEN_PAGES;
+        }
+        if (limit != mOffscreenPageLimit) {
+            mOffscreenPageLimit = limit;
+            populate();
+        }
+    }
+```
+发现0和1的时候是一样的，应该默认缓存是1，小于1的都忽略，这就是为什么和最开始的结果一样了。
 
 ###番外篇－－－－Fragment数据保存
 
