@@ -349,6 +349,13 @@ onSaveInstanceState在很多情况下都不在调用，为啥？见[这里](http
             //第一次进入做一些初始化操作
         }
     }
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(!restoreStateFromArguments()){
+            //第一次进入做一些初始化操作
+        }
+    }
 ```
 
 通过上面两个就能比较完美的保存Fragment里面的数据了。
